@@ -19,8 +19,24 @@ class CharacterMaps {
 	/* Main Function */
 	public static void main (String[] args) throws IOException{
 		String code_page = readScreenFont(file_name);
-		String[][] string_array = stringToArray(code_page);
-		print(string_array, 0);
+		String[][] normal = stringToArray(code_page);
+		String[][] inverted = invert(normal);
+		print(normal, 48);
+		print(inverted, 48);
+	}
+
+	/*
+	 * Inverts the rows of a 2d array.
+	 */
+	private static String[][] invert(String[][] string_array) {
+		String[] temp = new String[256];
+		String[][] inverted = new String[8][256];
+		for (int i = 0; i < string_array.length/2; i++){
+			temp = string_array[i];
+			inverted[i] = string_array[string_array.length-1-i];
+			inverted[string_array.length-1-i] = temp;
+		}
+		return inverted;
 	}
 
 	/*
@@ -29,7 +45,7 @@ class CharacterMaps {
 	private static void print(String[][] string_array, int index) {
 		System.out.println("--- Byte " + index + " ---");
 		for (int i = 0; i < 8; i++){
-			System.out.println("Row:" + (i+1) + " " + string_array[i][index]);
+			System.out.println("Row: " + (i+1) + " " + string_array[i][index]);
 		}
 	}
 
@@ -60,7 +76,7 @@ class CharacterMaps {
 		String row 			= "";							// string of each row
 		String[] split_row	= new String[256];				// row split into array of bytes
 		String row_delim 	= " { \n  ";					// deliminates the start of a new row
-		String byte_delim	= ", ";							// byte separator
+		String byte_delim	= ",";							// byte separator
 		int start_index 	= code_page.indexOf(row_delim);	// start of row
 		int end_index 		= start_index;					// end of row
 		for (int i = 0; i < 8; i++){
@@ -72,6 +88,7 @@ class CharacterMaps {
 			} else {
 				row = code_page.substring(start_index + 7, end_index - 17);
 			}
+			row = row.replaceAll("\\s+", "");
 			split_row = row.split(byte_delim);
 			rows[i] = split_row;
 			start_index = end_index;
