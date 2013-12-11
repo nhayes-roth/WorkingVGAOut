@@ -21,11 +21,8 @@ class CharacterMaps {
 		String code_page = readScreenFont(file_name);
 		String[][] normal = stringToArray(code_page);
 		String[][] inverted = invert(normal);
-//		writeToFile(normal, "normal.h");
-//		writeToFile(inverted, "inverted.h");
-//		print(normal, 48);
-//		print(inverted, 48);
-		System.out.println(arrayToString(inverted, "inverted"));
+		writeToFile(normal, "normal", "normal.h");
+		writeToFile(inverted, "inverted", "inverted.h");
 	}
 	
 	/*
@@ -57,20 +54,18 @@ class CharacterMaps {
 	/*
 	 * Writes the provided String[][] to a bit pattern file.
 	 */
-//	private static void writeToFile(String[][] array, String file_name) {
-//		String header = "byte screen_font [8] [256] PROGMEM = {\n";
-//		PrintStream out = null;
-//		try {
-//			out = new PrintStream(new FileOutputStream(file_name));
-//		    out.print("");
-//			out.print(text);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.err.println("\nError encountered writing to file.");
-//			System.exit(1);
-//		}
-//		
-//	}
+	private static void writeToFile(String[][] array, String array_name, String file_name) {
+		PrintStream out = null;
+		try {
+			out = new PrintStream(new FileOutputStream(file_name));
+			out.print(arrayToString(array, array_name));
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("\nError encountered writing to file.");
+			System.exit(1);
+		}
+		
+	}
 
 	/*
 	 * Inverts the rows of a 2d array.
