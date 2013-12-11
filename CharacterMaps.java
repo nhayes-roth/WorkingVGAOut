@@ -21,9 +21,56 @@ class CharacterMaps {
 		String code_page = readScreenFont(file_name);
 		String[][] normal = stringToArray(code_page);
 		String[][] inverted = invert(normal);
-		print(normal, 48);
-		print(inverted, 48);
+//		writeToFile(normal, "normal.h");
+//		writeToFile(inverted, "inverted.h");
+//		print(normal, 48);
+//		print(inverted, 48);
+		System.out.println(arrayToString(inverted, "inverted"));
 	}
+	
+	/*
+	 * Returns a String version of an array.
+	 */
+	private static String arrayToString(Object[][] arr, String title){
+		StringBuilder sb = new StringBuilder();
+		// add the title line
+		sb.append("byte " + title + " [8] [256] PROGMEM = {\n");
+		// add all the rows
+		for (int row = 0; row < 8; row++){
+			sb.append("// Row " + (row+1) + "\n");
+			sb.append(" { ");
+			for (int i = 0; i < 256; i++){
+				if (i%16 == 0){
+					sb.append("\n  ");
+				}
+				sb.append(arr[row][i].toString());
+				sb.append(", ");
+			}
+		sb.append("\n  }, \n");
+		}
+		// add the closing lines
+		sb.append("\n};");
+		// return
+		return sb.toString();
+	}
+
+	/*
+	 * Writes the provided String[][] to a bit pattern file.
+	 */
+//	private static void writeToFile(String[][] array, String file_name) {
+//		String header = "byte screen_font [8] [256] PROGMEM = {\n";
+//		PrintStream out = null;
+//		try {
+//			out = new PrintStream(new FileOutputStream(file_name));
+//		    out.print("");
+//			out.print(text);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.err.println("\nError encountered writing to file.");
+//			System.exit(1);
+//		}
+//		
+//	}
 
 	/*
 	 * Inverts the rows of a 2d array.
