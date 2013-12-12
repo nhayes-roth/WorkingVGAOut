@@ -4,12 +4,14 @@
  * Author:	Nathan Hayes-Roth
  * ---------------------------
  * Transforms the bit mapping for CP437 into several new character maps:
- * 		- inverted
- *		- reflected
+ * 		- inverted		- flip rows (1/8, 2/7, 3/6, 4/5)
+ *		- reflected		- 
+ *		- highlighted	- 
  */
 
 import java.util.*;
 import java.io.*;
+import java.lang.Byte;
 
 class CharacterMaps {
 
@@ -23,8 +25,29 @@ class CharacterMaps {
 		String[][] inverted = invert(normal);
 		writeToFile(normal, "normal", "normal.h");
 		writeToFile(inverted, "inverted", "inverted.h");
+		
+//		System.out.println(normal[0][0]);
+//		byte b = (byte)(Integer.parseInt(normal[0][0].substring(2), 16) & 0xff);
+//		System.out.printf("0x%02X", b);
+		
+		Byte[][] bytes = stringToBytes(normal);
+		
+		
+		print(normal,42);
+		print(bytes,42);
 	}
 	
+	private static Byte[][] stringToBytes(String[][] normal) {
+		Byte[][] to_return = new Byte[normal.length][normal[0].length];
+		for (int i=0; i<normal.length; i++){
+			for (int j=0; j<normal[0].length; j++){
+				byte b = (byte)(Integer.parseInt(normal[i][j].substring(2), 16) & 0xff);
+				to_return[i][j] = b;
+			}
+		}
+		return to_return;
+	}
+
 	/*
 	 * Returns a String version of an array.
 	 */
@@ -84,10 +107,15 @@ class CharacterMaps {
 	/*
 	 * Prints the byte of the given index.
 	 */
-	private static void print(String[][] string_array, int index) {
+	private static void print(Object[][] string_array, int index) {
 		System.out.println("--- Byte " + index + " ---");
 		for (int i = 0; i < 8; i++){
-			System.out.println("Row: " + (i+1) + " " + string_array[i][index]);
+			if (string_array[0][0] instanceof String){
+				System.out.println("Row: " + (i+1) + " " + string_array[i][index]);	
+			}
+			else {
+				System.out.println("Row: " + (i+1) + " " + String.format("0x%02X", string_array[i][index]));	
+			}
 		}
 	}
 
