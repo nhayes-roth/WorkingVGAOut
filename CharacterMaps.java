@@ -5,8 +5,8 @@
  * ---------------------------
  * Transforms the bit mapping for CP437 into several new character maps:
  * 		- inverted		- flip rows (1/8, 2/7, 3/6, 4/5)
- *		- reflected		- 
- *		- highlighted	- 
+ *		- reflected		- reverse binary string
+ *		- highlighted		- negate bits in binary string
  */
 
 import java.util.*;
@@ -17,27 +17,19 @@ class CharacterMaps {
 
 	/* Main Function */
 	public static void main (String[] args) throws IOException{
+		// read bit mapping to String
 		String code_page = readScreenFont("screenfont.h");
+		// convert to String and Byte arrays
 		String[][] normal = stringToArray(code_page);
-		String[][] inverted = invert(normal);
 		Byte[][] bytes = stringToBytes(normal);
+		// create 3 new character sets
+		String[][] inverted = invert(normal);
 		Byte[][] highlighted = highlight(bytes);
 		String[][] reversed = reverse(bytes);
-		
-
-		writeToFile(normal, "normal", "normal.h");
+		// write all 3 to new .h files
 		writeToFile(inverted, "inverted", "inverted.h");
 		writeToFile(highlighted, "highlighted", "highlighted.h");
 		writeToFile(reversed, "reversed", "reversed.h");
-		
-		
-		
-//		print(normal,42);
-//		print(inverted,42);
-		
-//		System.out.println(normal[0][0]);
-//		byte b = (byte)(Integer.parseInt(normal[0][0].substring(2), 16) & 0xff);
-//		System.out.printf("0x%02X", b);
 	}
 	
 	/*
