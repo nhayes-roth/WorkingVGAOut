@@ -25,19 +25,40 @@ class CharacterMaps {
 		String[][] inverted = invert(normal);
 		Byte[][] bytes = stringToBytes(normal);
 		Byte[][] highlighted = highlight(bytes);
+		String[][] reversed = reverse(bytes);
 		
 
 		writeToFile(normal, "normal", "normal.h");
 		writeToFile(inverted, "inverted", "inverted.h");
-		writeToFile(bytes, "bytes", "bytes.h");
 		writeToFile(highlighted, "highlighted", "highlighted.h");
+		writeToFile(reversed, "reversed", "reversed.h");
 		
-		print(normal,42);
-		print(highlighted,42);
+		
+		
+//		print(normal,42);
+//		print(inverted,42);
 		
 //		System.out.println(normal[0][0]);
 //		byte b = (byte)(Integer.parseInt(normal[0][0].substring(2), 16) & 0xff);
 //		System.out.printf("0x%02X", b);
+	}
+	
+	/*
+	 * Reverse the bits within a byte and return the hex String version.
+	 */
+	private static String[][] reverse(Byte[][] bytes){
+		String[][] result = new String[8][256];
+		for (int i=0; i<bytes.length; i++){
+			for (int j=0; j<bytes[0].length; j++){
+				String str = Integer.toBinaryString(bytes[i][j]);
+				str = str.substring(str.length()-8);
+				String reversed_binary = new StringBuilder(str).reverse().toString();
+				String reversed_hex = String.format("0x%S", Integer.toHexString(Integer.parseInt(reversed_binary, 2)));
+				result[i][j] = reversed_hex;
+				
+			}
+		}
+		return result;
 	}
 	
 	/*
