@@ -15,12 +15,9 @@ import java.lang.Byte;
 
 class CharacterMaps {
 
-	/* Class Variables */
-	private static String file_name = "screenfont.h";
-
 	/* Main Function */
 	public static void main (String[] args) throws IOException{
-		String code_page = readScreenFont(file_name);
+		String code_page = readScreenFont("screenfont.h");
 		String[][] normal = stringToArray(code_page);
 		String[][] inverted = invert(normal);
 		Byte[][] bytes = stringToBytes(normal);
