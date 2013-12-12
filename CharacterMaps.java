@@ -23,20 +23,39 @@ class CharacterMaps {
 		String code_page = readScreenFont(file_name);
 		String[][] normal = stringToArray(code_page);
 		String[][] inverted = invert(normal);
+		Byte[][] bytes = stringToBytes(normal);
+		Byte[][] highlighted = highlight(bytes);
+		
+
 		writeToFile(normal, "normal", "normal.h");
 		writeToFile(inverted, "inverted", "inverted.h");
+		writeToFile(bytes, "bytes", "bytes.h");
+		writeToFile(highlighted, "highlighted", "highlighted.h");
+		
+		print(normal,42);
+		print(highlighted,42);
 		
 //		System.out.println(normal[0][0]);
 //		byte b = (byte)(Integer.parseInt(normal[0][0].substring(2), 16) & 0xff);
 //		System.out.printf("0x%02X", b);
-		
-		Byte[][] bytes = stringToBytes(normal);
-		
-		
-		print(normal,42);
-		print(bytes,42);
 	}
 	
+	/*
+	 * Negates all the bits in a byte array to, hopefully, create a highlighted effect.
+	 */
+	private static Byte[][] highlight(Byte[][] bytes) {
+		Byte[][] highlighted = new Byte[8][256];
+		for (int i=0; i<bytes.length; i++){
+			for (int j=0; j<bytes[0].length; j++){
+				highlighted[i][j] = (byte) ~bytes[i][j];
+			}
+		}
+		return highlighted;
+	}
+
+	/*
+	 * Converts the original 2d string array to a 2d byte array.
+	 */
 	private static Byte[][] stringToBytes(String[][] normal) {
 		Byte[][] to_return = new Byte[normal.length][normal[0].length];
 		for (int i=0; i<normal.length; i++){
@@ -63,7 +82,12 @@ class CharacterMaps {
 				if (i%16 == 0){
 					sb.append("\n  ");
 				}
-				sb.append(arr[row][i].toString());
+				if (arr[0][0] instanceof String){
+					sb.append(arr[row][i].toString());
+				}
+				else {
+					sb.append(String.format("0x%02X", arr[row][i]));
+				}
 				sb.append(", ");
 			}
 		sb.append("\n  }, \n");
@@ -77,7 +101,7 @@ class CharacterMaps {
 	/*
 	 * Writes the provided String[][] to a bit pattern file.
 	 */
-	private static void writeToFile(String[][] array, String array_name, String file_name) {
+	private static void writeToFile(Object[][] array, String array_name, String file_name) {
 		PrintStream out = null;
 		try {
 			out = new PrintStream(new FileOutputStream(file_name));
@@ -107,14 +131,14 @@ class CharacterMaps {
 	/*
 	 * Prints the byte of the given index.
 	 */
-	private static void print(Object[][] string_array, int index) {
+	private static void print(Object[][] array, int index) {
 		System.out.println("--- Byte " + index + " ---");
 		for (int i = 0; i < 8; i++){
-			if (string_array[0][0] instanceof String){
-				System.out.println("Row: " + (i+1) + " " + string_array[i][index]);	
+			if (array[0][0] instanceof String){
+				System.out.println("Row: " + (i+1) + " " + array[i][index]);	
 			}
 			else {
-				System.out.println("Row: " + (i+1) + " " + String.format("0x%02X", string_array[i][index]));	
+				System.out.println("Row: " + (i+1) + " " + String.format("0x%02X", array[i][index]));	
 			}
 		}
 	}
